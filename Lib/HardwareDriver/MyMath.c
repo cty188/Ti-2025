@@ -1,6 +1,6 @@
 #include "mymath.h"
 
-const float argTab[] = {	//0-90¡ãÕýÏÒÖµ,Ã¿²½0.5¡ã
+const float argTab[] = {	//0-90ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ,Ã¿ï¿½ï¿½0.5ï¿½ï¿½
 	0.0000, 0.0087, 0.0175, 0.0262, 0.0349, 0.0436, 0.0523, 0.0610, 0.0698, 0.0785, 0.0872, 0.0958,
 	0.1045, 0.1132, 0.1219, 0.1305, 0.1392, 0.1478, 0.1564, 0.1650, 0.1736, 0.1822, 0.1908, 0.1994,
 	0.2079, 0.2164, 0.2250, 0.2334, 0.2419, 0.2504, 0.2588, 0.2672, 0.2756, 0.2840, 0.2924, 0.3007,
@@ -27,11 +27,11 @@ float MYMATH_Pow(float a, u8 b)
 	}
 	return result;
 }
-//ÕýÏÒº¯Êý
+//ï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½
 float MYMATH_Sin(float ang)
 {
 	float value = 0;
-	//È·±£0<=ang<=360;
+	//È·ï¿½ï¿½0<=ang<=360;
 	while(ang < 0)
 		ang += 360;
 	while(ang > 360)
@@ -44,13 +44,13 @@ float MYMATH_Sin(float ang)
 	
 	return value;
 }
-//ÓàÏÒº¯Êý
+//ï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½
 float MYMATH_Cos(float ang)
 {
 	return MYMATH_Sin(ang + 90);
 }
 
-//·´ÕýÏÒº¯Êý
+//ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½
 float MYMATH_arcSin(float value)
 {
 	u8 i = 0;
@@ -59,7 +59,7 @@ float MYMATH_arcSin(float value)
 	if(value > 0)
 	{
 		sign = 1;
-		if(value > 0.9999)
+		if(value > 0.9999f)
 			return 90;
 	}
 	else if(value < 0)
@@ -81,7 +81,7 @@ float MYMATH_arcSin(float value)
 	}
 	return 180;
 }
-//·´ÓàÏÒº¯Êý
+//ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½
 float MYMATH_arcCos(float value)
 {
 	return 90-MYMATH_arcSin(value);

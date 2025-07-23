@@ -11,7 +11,7 @@ void lcd_delay(uint32_t delay)
 static void lcd_io_ctrl(gpio_io* io, bool flag)
 {
     if(io && io->port)
-        HAL_GPIO_WritePin(io->port, io->pin, flag ^ io->invert);
+        HAL_GPIO_WritePin(io->port, io->pin, (GPIO_PinState)(flag ^ io->invert));
 }
 
 static void lcd_spi_transmit(void* spi, uint8_t* data, uint32_t len)
