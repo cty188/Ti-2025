@@ -26,6 +26,7 @@
 /* USER CODE BEGIN Includes */
 #include "BSP_GPIO.h"
 #include "lcd.h"
+#include "oled.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -113,12 +114,19 @@ int main(void)
   MX_GPIO_Init();
   MX_SPI6_Init();
   /* USER CODE BEGIN 2 */
+	HAL_Delay(1000);
+	OLED_Init();
+	HAL_Delay(1000);
   lcd_init_dev(&lcd_desc, LCD_1_47_INCH, LCD_ROTATE_90);
   
   lcd_print(&lcd_desc, 0, 20, "> Boring_TECH");
   lcd_print(&lcd_desc, 0, 40, "> IPS LCD 1.47inch 320x172");
   lcd_print(&lcd_desc, 0, 60, "> STM32H723VGT6");
   lcd_print(&lcd_desc, 0, 80, "> 2024/4/1");
+	
+	OLED_ShowFloat(35,50,1.1,4,SIZE12,SpanSingle);		//OLED_ShowString(0,50,"Rspeed:",SIZE12,SpanSingle);
+	OLED_ShowMap();
+	OLED_ClearMap(0x00);
   /* USER CODE END 2 */
 
   /* Init scheduler */

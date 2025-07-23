@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32H723xx,USE_PWR_LDO_SUPPLY</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32H7xx_HAL_Driver/Inc;../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32H7xx/Include;../Drivers/CMSIS/Include;../Components/BSP;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2;../Tasks</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32H7xx_HAL_Driver/Inc;../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32H7xx/Include;../Drivers/CMSIS/Include;../Components/BSP;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2;../Tasks;..\Lib;..\Lib\Algorithm;..\Lib\ApplicationLayer;..\Lib\FunctionalModule;..\Lib\HardwareDriver</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1484,6 +1484,37 @@
               <FilePath>..\Tasks\Task10Hz.c</FilePath>
             </File>
           </Files>
+        </Group>
+        <Group>
+          <GroupName>Algorithm</GroupName>
+        </Group>
+        <Group>
+          <GroupName>HardwareDriver</GroupName>
+          <Files>
+            <File>
+              <FileName>IIC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Lib\HardwareDriver\IIC.c</FilePath>
+            </File>
+            <File>
+              <FileName>MyMath.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Lib\HardwareDriver\MyMath.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>FunctionalModule</GroupName>
+          <Files>
+            <File>
+              <FileName>Oled.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Lib\FunctionalModule\Oled.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>ApplicationLayer</GroupName>
         </Group>
         <Group>
           <GroupName>::CMSIS</GroupName>
