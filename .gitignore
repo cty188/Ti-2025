@@ -1,0 +1,47 @@
+# Keil MDK-ARM generated files
+*.o
+*.d
+*.crf
+*.htm
+*.map
+*.dep
+*.build_log.htm
+*.axf
+*.hex
+*.bin
+*.elf
+*.lst
+*.lnp
+*.sct
+
+# Keil project user files
+*.uvguix.*
+*.uvoptx
+
+# Build directories
+MDK-ARM/STM32H723VGT6/
+MDK-ARM/DebugConfig/
+MDK-ARM/RTE/
+
+# STM32CubeIDE
+.metadata
+.project
+.cproject
+.settings/
+Debug/
+Release/
+
+# Visual Studio Code
+.vscode/
+
+# System files
+Thumbs.db
+.DS_Store
+
+# Temporary files
+*.tmp
+*.bak
+*~
+
+# Log files
+*.log
