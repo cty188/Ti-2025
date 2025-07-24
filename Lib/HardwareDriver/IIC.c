@@ -13,7 +13,7 @@ void IIC_delay(void)
     
     uint32_t start = DWT->CYCCNT;
     // 假设系统时钟为240MHz，1微秒需要240个时钟周期
-    uint32_t cycles = SystemCoreClock / 15000000; // 1微秒对应的时钟周期数
+    uint32_t cycles = SystemCoreClock / 18300000; // 1微秒对应的时钟周期数
     
     while ((DWT->CYCCNT - start) < cycles) {
         // 等待直到经过了足够的时钟周期

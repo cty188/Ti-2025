@@ -1,15 +1,16 @@
 /* 头文件包含 ----------------------------------------------------------------*/
-    // TI MSP系列芯片底层驱动库
-#include "uart.h"              // 系统级配置
+#include "uart.h"      // STM32 HAL库的UART头文件
+#include "usart.h"      // STM32 HAL库的UART头文件
+#include "stdio.h"
+#include "string.h"
 
 
 /* 全局变量定义 --------------------------------------------------------------*/
+extern UART_HandleTypeDef huart1; // 使用USART1，在usart.c中定义
 
-volatile unsigned char uart_data = 0;
-
-volatile uint8_t new_data_flag = 0;  
-
-uint8_t RxPacket[HiPnuc_PACKET_SIZE] = {0};
+volatile uint8_t uart_rx_data = 0;      // 单字节接收缓存
+volatile uint8_t new_data_flag = 0;     // 新数据标志
+uint8_t RxPacket[100] = {0}; // 数据包缓存，假设包大小为100
 
 /* 自定义通信协议帧配置 -------------------------------------------------------*/
 
@@ -17,102 +18,147 @@ uint8_t RxPacket[HiPnuc_PACKET_SIZE] = {0};
 /* 函数定义 ----------------------------------------------------------------*/
 
 /**
-  * @brief  UART中断配置函数
-  * @note   配置所有UART通道的中断使能和状态清除
-  *         适用于TI MSPM0系列芯片的UART配置
+  * @brief  UART初始化函数（STM32 HAL库方式）
+  * @note   需在main.c或CubeMX中调用MX_USART1_UART_Init
   */
 void UsartInit(void)
 {
-  // 清除所有UART通道的中断挂起状态
-  NVIC_ClearPendingIRQ(UART_0_INST_INT_IRQN);
-	NVIC_ClearPendingIRQ(UART_1_INST_INT_IRQN);
-  NVIC_ClearPendingIRQ(UART_2_INST_INT_IRQN);
-//  NVIC_ClearPendingIRQ(UART_3_INST_INT_IRQN);
-
-  // 使能所有UART通道的接收中断
-  NVIC_EnableIRQ(UART_0_INST_INT_IRQN);
-  NVIC_EnableIRQ(UART_1_INST_INT_IRQN);
-  NVIC_EnableIRQ(UART_2_INST_INT_IRQN);
-//  NVIC_EnableIRQ(UART_3_INST_INT_IRQN);
-
-  // 清除所有UART接收中断标志（防止残留中断）
-  DL_UART_clearInterruptStatus(UART_0_INST,DL_UART_INTERRUPT_RX);
-  DL_UART_clearInterruptStatus(UART_1_INST,DL_UART_INTERRUPT_RX);
-  DL_UART_clearInterruptStatus(UART_2_INST,DL_UART_INTERRUPT_RX);
-//  DL_UART_clearInterruptStatus(UART_3_INST,DL_UART_INTERRUPT_RX);
-	
-
+    // HAL库初始化已在MX_USART1_UART_Init中完成
+    // 这里只需开启接收中断
+    HAL_UART_Receive_IT(&huart1, (uint8_t *)&uart_rx_data, 1);
 }
 //串口发送单个字符
-extern Car_t Car;
 extern uint16_t BeginProtectFlag;
 extern uint16_t BeginProtectCount;
 
-void UART_0_INST_IRQHandler(void)
+/**
+  * @brief  UART接收完成回调（STM32 HAL库方式）
+  * @note   在stm32h7xx_it.c的USART1_IRQHandler中会自动调用
+  */
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-    //如果产生了串口中断
-    switch( DL_UART_getPendingInterrupt(UART_0_INST) )
+    if (huart->Instance == USART1)
     {
-        case DL_UART_IIDX_RX://如果是接收中断
-					
-          uart_data = DL_UART_Main_receiveData(UART_0_INST);
-					CarStart(Car);
-					uart0_send_char(uart_data);
-					break;
-
-        default://其他的串口中断
-            break;
+        new_data_flag = 1;
+        // 处理接收到的数据
+        // 可在此调用原来的CarStart等函数
+        uart_send_char(uart_rx_data); // 回显接收到的数据
+        
+        // 继续开启下一次接收
+        HAL_UART_Receive_IT(&huart1, (uint8_t *)&uart_rx_data, 1);
     }
 }
 
-void UART_1_INST_IRQHandler(void)
+/**
+  * @brief  发送单个字符
+  */
+void uart_send_char(char ch)
 {
-
-  if(DL_UART_getEnabledInterruptStatus(UART_1_INST,DL_UART_INTERRUPT_RX) == DL_UART_INTERRUPT_RX)
-  {
-		DL_UART_clearInterruptStatus(UART_1_INST,DL_UART_INTERRUPT_RX);
-		uint8_t ch = DL_UART_receiveData(UART_1_INST);
-		pack_data(ch);
+    // 方法1：简单直接发送（HAL库内部会处理状态）
+    HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 1000);
     
-  }
-
+    // 方法2：如果需要状态检查，用带超时的检查
+    /*
+    uint32_t timeout = 1000;  // 1秒超时
+    while((HAL_UART_GetState(&huart1) != HAL_UART_STATE_READY) && timeout > 0)
+    {
+        HAL_Delay(1);
+        timeout--;
+    }
+    if(timeout > 0)
+    {
+        HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 1000);
+    }
+    */
 }
 
-void UART_2_INST_IRQHandler(void)
+/**
+  * @brief  发送字符串
+  */
+void uart_send_string(const char *str)
 {
-  // 接收中断处理
-  if(DL_UART_getEnabledInterruptStatus(UART_2_INST,DL_UART_INTERRUPT_RX) == DL_UART_INTERRUPT_RX)
-  {
-    uint8_t ch = DL_UART_receiveData(UART_2_INST);
-    DL_UART_clearInterruptStatus(UART_2_INST,DL_UART_INTERRUPT_RX);
-  }
+    HAL_UART_Transmit(&huart1, (uint8_t *)str, strlen(str), 100);
 }
 
-
-void uart1_restart(void)
+/**
+  * @brief  整数转字符串（自实现，避免sprintf问题）
+  */
+void int_to_string(int num, char *str)
 {
-	DL_UART_clearInterruptStatus(UART_1_INST,DL_UART_INTERRUPT_RX);
-	DL_UART_reset(UART_1_INST);
-	DL_UART_disable(UART_1_INST);
-	DL_UART_disablePower(UART_1_INST);
-	DL_UART_enablePower(UART_1_INST);
-	SYSCFG_DL_UART_1_init();
+    int i = 0;
+    int is_negative = 0;
+    
+    // 处理负数
+    if (num < 0) {
+        is_negative = 1;
+        num = -num;
+    }
+    
+    // 处理0的特殊情况
+    if (num == 0) {
+        str[i++] = '0';
+    }
+    
+    // 转换数字为字符串（逆序）
+    while (num > 0) {
+        str[i++] = (num % 10) + '0';
+        num /= 10;
+    }
+    
+    // 添加负号
+    if (is_negative) {
+        str[i++] = '-';
+    }
+    
+    // 字符串结束符
+    str[i] = '\0';
+    
+    // 反转字符串
+    int start = 0;
+    int end = i - 1;
+    while (start < end) {
+        char temp = str[start];
+        str[start] = str[end];
+        str[end] = temp;
+        start++;
+        end--;
+    }
 }
 
-
-void uart0_send_char(char ch)
-{
-    //当串口0忙的时候等待，不忙的时候再发送传进来的字符
-    while( DL_UART_isBusy(UART_0_INST) == true );
-    //发送单个字符
-    DL_UART_Main_transmitData(UART_0_INST, ch);
-}
-
+/**
+  * @brief  UART printf功能（发送整型数据）
+  */
 void uart_printf(int data)
 {
 	char temp[64];
 	sprintf(temp, "%d\n", data);
-	int a ,b = strlen((const char*)temp) ;
-	for(a = 0;a<b;a++)
-	uart0_send_char(temp[a]);
+	HAL_UART_Transmit(&huart1, (const unsigned char*)temp, strlen((const char*)temp), 1000);
+}
+
+/**
+  * @brief  UART重启函数（STM32 HAL库方式）
+  */
+void uart_restart(void)
+{
+    HAL_UART_DeInit(&huart1);
+    MX_USART1_UART_Init();
+    HAL_UART_Receive_IT(&huart1, (uint8_t *)&uart_rx_data, 1);
+}
+
+/**
+  * @brief  数据包处理函数（需要根据具体协议实现）
+  */
+void pack_data(uint8_t ch)
+{
+    // 这里需要根据具体的数据包协议来实现
+    // 原TI代码中的pack_data函数功能
+    static uint16_t index = 0;
+    if (index < sizeof(RxPacket))
+    {
+        RxPacket[index++] = ch;
+    }
+    else
+    {
+        index = 0; // 重置索引
+    }
 }

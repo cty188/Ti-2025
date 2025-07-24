@@ -20,13 +20,12 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "spi.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "BSP_GPIO.h"
-#include "lcd.h"
-#include "oled.h"
+#include "Headfile.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -112,10 +111,14 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_SPI6_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   OLED_Init();
   lcd_init_dev(&lcd_desc, LCD_1_47_INCH, LCD_ROTATE_90);
-  
+  UsartInit();
+	uart_send_char('a');
+	uart_send_string("asd");
+	uart_printf(000);
   lcd_print(&lcd_desc, 0, 20, "> Boring_TECH");
   lcd_print(&lcd_desc, 0, 40, "> IPS LCD 1.47inch 320x172");
   lcd_print(&lcd_desc, 0, 60, "> STM32H723VGT6");

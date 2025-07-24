@@ -2,7 +2,7 @@
 // 用于1000Hz任务的实现
 
 #include "Task1000Hz.h"
-#include "Oled.h"
+#include "Headfile.h"
 
 void Task1000Hz_Function(void)
 {
@@ -10,5 +10,4 @@ void Task1000Hz_Function(void)
 	static int count = 0;
 	count++;
 	OLED_ShowFloat(35,50,count,4,SIZE12,SpanSingle);		//OLED_ShowString(0,50,"Rspeed:",SIZE12,SpanSingle);
-
 }

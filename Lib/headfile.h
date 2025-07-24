@@ -8,14 +8,16 @@
 
 //#include "timer.h"
 //#include "pwm.h"
+#include "BSP_GPIO.h"
 
-//#include "Uart.h" 
+#include "Uart.h" 
 #include "IIC.h" 
 
 //#include "pid.h"
 //#include "hipnuc_dec.h"
 
 //#include "MotorsCtrl.h"
+#include "lcd.h"
 #include "oled.h" 
 //#include "GraySensor.h"
 //#include "BMI088driver.h"
