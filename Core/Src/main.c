@@ -72,6 +72,8 @@ lcd lcd_desc = {
     .io = &lcd_io_desc,
     .line_buffer = line_buffer,
 };
+
+float gyro[3], accel[3], temp;
 /* USER CODE END 0 */
 
 /**
@@ -112,6 +114,7 @@ int main(void)
   MX_GPIO_Init();
   MX_SPI6_Init();
   MX_USART1_UART_Init();
+  MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
   OLED_Init();
   lcd_init_dev(&lcd_desc, LCD_1_47_INCH, LCD_ROTATE_90);
@@ -123,7 +126,12 @@ int main(void)
   lcd_print(&lcd_desc, 0, 40, "> IPS LCD 1.47inch 320x172");
   lcd_print(&lcd_desc, 0, 60, "> STM32H723VGT6");
   lcd_print(&lcd_desc, 0, 80, "> 2024/4/1");
-  
+			while(BMI088_init())
+		{
+				;
+		}
+	BMI088_read(gyro, accel, &temp);
+		uart_printf(gyro[0]);
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -178,7 +186,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLM = 2;
   RCC_OscInitStruct.PLL.PLLN = 44;
   RCC_OscInitStruct.PLL.PLLP = 1;
-  RCC_OscInitStruct.PLL.PLLQ = 2;
+  RCC_OscInitStruct.PLL.PLLQ = 3;
   RCC_OscInitStruct.PLL.PLLR = 2;
   RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_3;
   RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;

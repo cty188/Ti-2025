@@ -1674,6 +1674,11 @@
               <FileType>1</FileType>
               <FilePath>..\Lib\HardwareDriver\Uart.c</FilePath>
             </File>
+            <File>
+              <FileName>BMI088Middleware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Lib\HardwareDriver\BMI088Middleware.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1683,6 +1688,11 @@
               <FileName>Oled.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Lib\FunctionalModule\Oled.c</FilePath>
+            </File>
+            <File>
+              <FileName>BMI088driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Lib\FunctionalModule\BMI088driver.c</FilePath>
             </File>
           </Files>
         </Group>

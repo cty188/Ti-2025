@@ -20,7 +20,7 @@
 #include "lcd.h"
 #include "oled.h" 
 //#include "GraySensor.h"
-//#include "BMI088driver.h"
+#include "BMI088driver.h"
 //#include "Encoder.h"
 //#include "HiPnuc.h"
 //#include "Buzzer.h"

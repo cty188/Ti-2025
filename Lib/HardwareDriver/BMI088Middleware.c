@@ -1,5 +1,9 @@
-
 #include "BMI088Middleware.h"
+#include "main.h"
+
+#define BMI088_USING_SPI_UNIT   hspi2
+
+extern SPI_HandleTypeDef BMI088_USING_SPI_UNIT;
 
 /**
 ************************************************************************
@@ -91,8 +95,7 @@ void BMI088_delay_us(uint16_t us)
 **/
 void BMI088_ACCEL_NS_L(void)
 {
- //   HAL_GPIO_WritePin(ACC_CS_GPIO_Port, ACC_CS_Pin, GPIO_PIN_RESET);
-		DL_GPIO_clearPins(ACC_CS_GPIO_Port,ACC_CS_Pin);
+    HAL_GPIO_WritePin(ACC_CS_GPIO_Port, ACC_CS_Pin, GPIO_PIN_RESET);
 }
 /**
 ************************************************************************
@@ -104,8 +107,7 @@ void BMI088_ACCEL_NS_L(void)
 **/
 void BMI088_ACCEL_NS_H(void)
 {
-//    HAL_GPIO_WritePin(ACC_CS_GPIO_Port, ACC_CS_Pin, GPIO_PIN_SET);
-		DL_GPIO_setPins(ACC_CS_GPIO_Port,ACC_CS_Pin);
+    HAL_GPIO_WritePin(ACC_CS_GPIO_Port, ACC_CS_Pin, GPIO_PIN_SET);
 }
 /**
 ************************************************************************
@@ -117,8 +119,7 @@ void BMI088_ACCEL_NS_H(void)
 **/
 void BMI088_GYRO_NS_L(void)
 {
-//    HAL_GPIO_WritePin(GYRO_CS_GPIO_Port, GYRO_CS_Pin, GPIO_PIN_RESET);
-		DL_GPIO_clearPins(GYRO_CS_GPIO_Port,GYRO_CS_Pin);
+    HAL_GPIO_WritePin(GYRO_CS_GPIO_Port, GYRO_CS_Pin, GPIO_PIN_RESET);
 }
 /**
 ************************************************************************
@@ -130,8 +131,7 @@ void BMI088_GYRO_NS_L(void)
 **/
 void BMI088_GYRO_NS_H(void)
 {
-//    HAL_GPIO_WritePin(GYRO_CS_GPIO_Port, GYRO_CS_Pin, GPIO_PIN_SET);
-		DL_GPIO_setPins(GYRO_CS_GPIO_Port,GYRO_CS_Pin);
+    HAL_GPIO_WritePin(GYRO_CS_GPIO_Port, GYRO_CS_Pin, GPIO_PIN_SET);
 }
 /**
 ************************************************************************
@@ -143,17 +143,8 @@ void BMI088_GYRO_NS_H(void)
 **/
 uint8_t BMI088_read_write_byte(uint8_t txdata)
 {
-        uint8_t rxdata = 0;
-
-        //发送数据
-        DL_SPI_transmitData8(SPI_Bmi088_INST,txdata);
-        //等待SPI总线空闲
-        while(DL_SPI_isBusy(SPI_Bmi088_INST));
-        //接收数据
-        rxdata = DL_SPI_receiveData8(SPI_Bmi088_INST);
-        //等待SPI总线空闲
-        while(DL_SPI_isBusy(SPI_Bmi088_INST));
-
-        return rxdata;
+    uint8_t rx_data;
+    HAL_SPI_TransmitReceive(&BMI088_USING_SPI_UNIT, &txdata, &rx_data, 1, 1000);
+    return rx_data;
 }
 

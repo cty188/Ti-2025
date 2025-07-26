@@ -1,8 +1,8 @@
 #ifndef BMI088DRIVER_H
 #define BMI088DRIVER_H
 
-#include "headfile.h"
-
+#include "stdint.h"
+#include "main.h"
 
 #define BMI088_TEMP_FACTOR 0.125f
 #define BMI088_TEMP_OFFSET 23.0f
@@ -46,7 +46,7 @@
 #define BMI088_GYRO_125_SEN 0.000066579027251980956150958662738366f
 
 
-typedef struct BMI088_RAW_DATA
+typedef __packed struct BMI088_RAW_DATA
 {
     uint8_t status;
     int16_t accel[3];
